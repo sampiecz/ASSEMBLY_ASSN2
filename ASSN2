@@ -33,11 +33,13 @@ LOOP     XREAD BUFFER,80      Iterate over each line and read it
          SR    2,5            Subtract Z from W
          AR    2,4            Add Y to diff of Z and W
          SR    2,3            Subtract X from it all
+         LR    7,2            Load sum into register 7
          XDECO 2,WNUM         Format register 2 and store in WNUM
          XDECO 3,XNUM         Format register 3 and store in XNUM
          XDECO 4,YNUM         Format register 4 and store in YNUM
          XDECO 5,ZNUM         Format register 5 and store in ZNUM
-         XPRNT LINE,90        Start string print HERE
+         XDECO 7,FNUM         Format register 5 and store in ZNUM
+         XPRNT HERE,90        Start string print HERE
          BC    B'1111',LOOP   Goto top of loop
 ENDLOOP  XDECO 6,EOL          Put in EOL
          XDECO 7,SUM          Put in SUM
@@ -45,17 +47,21 @@ ENDLOOP  XDECO 6,EOL          Put in EOL
          BR    14             End of code
          LTORG
 HERE     DC    C' '           Start string HERE
-         DC    CL3'X ='
+         DC    CL3'W ='
 WNUM     DS    CL12           Var for W
          DC    CL8' '
-         DC    CL3'Y ='
+         DC    CL3'X ='
 XNUM     DS    CL12           Var for X
          DC    CL8' '
-         DC    CL3'Z ='
-YNUM     DS    CL12           Var for num Y
+         DC    CL3'Y ='
+YNUM     DS    CL12           Var for Y
          DC    CL8' '
-         DC    CL8'Result ='
-ZNUM     DS    CL12           Var for num Z
+         DC    CL3'Z ='
+ZNUM     DS    CL12           Var for Z
+         DC    CL8' '
+         DC    CL3'Result ='
+FNUM     DS    CL12           Var for final num
+         DC    CL8' '
 BEGN     DC    C' '           Begin string
          DC    CL17'Number of Lines = '
 EOL      DS    CL12           Var EOL
