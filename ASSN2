@@ -1,44 +1,73 @@
-//KC03O90A JOB ,'SAM',MSGCLASS=H
-//STEP1    EXEC PGM=ASSIST                                                 
-//STEPLIB  DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        
-//SYSPRINT DD SYSOUT=*                                                  
-//SYSIN    DD *                                                            
-**********************************************                          
-* ASSIGNMENT 2                                                          
-*                                                                       
-* NAME: SAMUEL PIECZ                                                    
-*                                                                       
-* REGISTER USAGE                                                        
-*  1     Used by XDECI                                                                      
-*  2     Store W 
-*  3     Store X 
-*  4     Store Y 
-*  5     Store Z 
-*  6     Counter
-*  7     Sum of two differences.
-* 15     Base register
-*********************************************                           
-MAIN     CSECT                                                          
-         USING MAIN,15                                                  
-* LOOP   XREAD BUFFER,80C                                               
-         XREAD BUFFER,80C                                               
-*        BC    B'0100', ENDLOOP
-         XDECI 2,BUFFER            STORE FIRST NUM W IN REG 2 
-         XDECI 3,0(1)              STORE SECOND NUM X IN REG 3
-         XDECI 4,0(1)              STORE THIRD NUM Y IN REG 4
-         XDECI 5,0(1)              STORE FOURTH NUM Z IN REG 5
-         SR    5,2                 Z MINUS W
-         AR    4,5                 ADD Y TO PREVIOUS ANSWER
-         SR    4,3                 SUBTRACT X FROM PREVIOUS SUM
-         XDUMP 4
-         BR    14                  END PROG                                     
-*        BUFFR DS 80C
-*        SUMLINE DC C'0'
-*        BC D'1111',LOOP ENDLOOP
-         END   MAIN                                                     
+//KC03O90A JOB ,'Sam Piecz',MSGCLASS=H
+//STEP1    EXEC  PGM=ASSIST
+//STEPLIB    DD  DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+//SYSPRINT   DD  SYSOUT=*
+//SYSIN      DD  *
+************************************************************
+*
+*  Program:     ASSIGN2
+*  Programmer:  Sam Piecz
+*
+*  Register usage:
+* REGISTER USAGE
+* 1  USED BY XDECI
+* 2  STORE W
+* 3  STORE X
+* 4  STORE Y
+* 5  STORE Z
+* 6  COUNTER                     
+* 7  SUM OF TWO DIFFERENCES
+* 15 BASE REGISTER        
+************************************************************
+MAIN     CSECT                                              
+         USING MAIN,15
+         SR    6,0            Make sure register is empty
+         SR    7,0            Make sure register is empty
+LOOP     XREAD BUFFER,80      Iterate over each line and read it
+         BC    B'0100',ENDLOOP
+         A     6,=F'1'        Increment counter
+         XDECI 2,BUFFER       Put W in R2 <- not the droid
+         XDECI 3,0(1)         Put X in R3
+         XDECI 4,0(1)         Put Y in R4
+         XDECI 5,0(1)         Put Z in R5
+         SR    2,5            Subtract Z from W
+         AR    2,4            Add Y to diff of Z and W
+         SR    2,3            Subtract X from it all
+         XDECO 2,XNUM         Format register 2 and store in XNUM
+         XDECO 3,YNUM         Format register 3 and store in YCOM
+         XDECO 4,ZNUM         Format register 4 and store in ZNUM
+         XDECO 5,RCOM         Format register 5 and store in RCOM
+         XPRNT LINE,90        Start string print HERE
+         BC    B'1111',LOOP   Goto top of loop
+ENDLOOP  XDECO 6,EOL          Put in EOL
+         XDECO 7,SUM          Put in SUM
+         XPRNT BEGN,66        Print starting at BEGN
+         BR    14             End of code
+         LTORG
+HERE     DC    C' '           Start string HERE
+         DC    CL3'X ='
+WNUM     DS    CL12           Var for W
+         DC    CL8' '
+         DC    CL3'Y ='
+XNUM     DS    CL12           Var for X
+         DC    CL8' '
+         DC    CL3'Z ='
+YNUM     DS    CL12           Var for num Y
+         DC    CL8' '
+         DC    CL8'Result ='
+ZNUM     DS    CL12           Var for num Z
+BEGN     DC    C' '           Begin string
+         DC    CL17'Number of Lines = '
+EOL      DS    CL12           Var EOL
+         DC    CL8' '
+         DC    CL16'Sum of Results ='
+SUM      DS    CL12           Variable SUM
+BUFFER   DS    0C             Variable BUFFER
+END      MAIN
 /*
 //FT05F001   DD  *
-   005   005   005   005 006   001   002   004
+   005   005   005   005
+   006   001   002   004
    001   002   003   004
      0    +7     2   -45
    100   088   035    10
