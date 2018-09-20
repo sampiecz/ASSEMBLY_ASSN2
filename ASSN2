@@ -21,8 +21,8 @@
 ************************************************************
 MAIN     CSECT                                              
          USING MAIN,15
-         SR    6,0            Make sure register is empty
-         SR    7,0            Make sure register is empty
+         SR    6,6            Make sure register is empty
+         SR    7,7            Make sure register is empty
 LOOP     XREAD BUFFER,80      Iterate over each line and read it
          BC    B'0100',ENDLOOP
          A     6,=F'1'        Increment counter
@@ -33,10 +33,10 @@ LOOP     XREAD BUFFER,80      Iterate over each line and read it
          SR    2,5            Subtract Z from W
          AR    2,4            Add Y to diff of Z and W
          SR    2,3            Subtract X from it all
-         XDECO 2,XNUM         Format register 2 and store in XNUM
-         XDECO 3,YNUM         Format register 3 and store in YCOM
-         XDECO 4,ZNUM         Format register 4 and store in ZNUM
-         XDECO 5,RCOM         Format register 5 and store in RCOM
+         XDECO 2,WNUM         Format register 2 and store in WNUM
+         XDECO 3,XNUM         Format register 3 and store in XNUM
+         XDECO 4,YNUM         Format register 4 and store in YNUM
+         XDECO 5,ZNUM         Format register 5 and store in ZNUM
          XPRNT LINE,90        Start string print HERE
          BC    B'1111',LOOP   Goto top of loop
 ENDLOOP  XDECO 6,EOL          Put in EOL
@@ -63,7 +63,7 @@ EOL      DS    CL12           Var EOL
          DC    CL16'Sum of Results ='
 SUM      DS    CL12           Variable SUM
 BUFFER   DS    0C             Variable BUFFER
-END      MAIN
+         END   MAIN
 /*
 //FT05F001   DD  *
    005   005   005   005
